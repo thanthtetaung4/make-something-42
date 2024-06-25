@@ -28,9 +28,26 @@ const Home = () => {
     } else console.log("not fetch");
   };
 
+  const fetchProjectData = () => {
+    console.log(auth);
+    const accessToken = auth;
+    if (auth !== "No Auth") {
+      axios
+        .post("http://localhost:5000/api/get_project_data", { accessToken })
+        .then((response) => {
+          setProjectData(response.data);
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
+    } else console.log("not fetch");
+  };
+
   useEffect(() => {
     setAuth(authToken);
     fetchCampusData();
+    fetchProjectData();
   }, [auth]);
 
   const handleLogout = () => {
@@ -42,6 +59,10 @@ const Home = () => {
     setSelectedCampus(event.target.value);
   };
 
+  const handleProjectChange = (event) => {
+    setSelectedProject(event.target.value);
+  };
+
   const campusOptions = campusData.map((campus) => {
     return (
       <option key={campus.id} value={campus.name}>
@@ -50,7 +71,13 @@ const Home = () => {
     );
   });
 
-  // const
+  const projectOptions = projectData.map((project) => {
+    return (
+      <option key={project.id} value={project.name}>
+        {project.name}
+      </option>
+    );
+  });
 
   return (
     <div>
@@ -58,6 +85,7 @@ const Home = () => {
       <p>This content is only accessible to logged-in users.</p>
       <button onClick={handleLogout}>Logout</button>
       <p>Auth Token:{auth}</p>
+      <label htmlFor="campus">Select Campus:</label>
       <select
         name="campus"
         id="campus"
@@ -66,7 +94,21 @@ const Home = () => {
       >
         {campusOptions}
       </select>
+      <label htmlFor="porject">Select porject:</label>
+      <select
+        name="porject"
+        id="porject"
+        value={selectedProject}
+        onChange={handleProjectChange}
+      >
+        {projectOptions}
+      </select>
       <p>Selected Campus: {selectedCampus}</p>
+      <p>Selected Project: {selectedProject}</p>
+
+      {/* {projectData.map((project) => (
+        <p key={project.id}>{project.name}</p>
+      ))} */}
     </div>
   );
 };
