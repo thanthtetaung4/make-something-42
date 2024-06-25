@@ -8,6 +8,10 @@ const Login = () => {
   const [userName, setUserName] = useState("");
   const [pwd, setPwd] = useState("");
 
+  const handleLogin42 = () => {
+    window.location.href = process.env.REACT_APP_OAUTH_42_URL;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('====================================');
@@ -34,6 +38,8 @@ const Login = () => {
         <input id="pwd"type="text" onChange={() => setPwd(event.target.value)}/>
         <br />
         <button type="submit" >Login</button>
+        <br />
+        <button type="button" onClick={handleLogin42}>Login with 42api</button>
       </form>
     </div>
   );
