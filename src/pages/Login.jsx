@@ -1,40 +1,41 @@
-import React, { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../components/AuthContext'; // Import context
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Login = () => {
-  const { login } = useContext(AuthContext); // Use context
+  const { login, isLoggedIn, authToken } = useContext(AuthContext); // Use context
+  const auth42Url = import.meta.env.VITE_REACT_APP_OAUTH_42_URL;
   const navigate = useNavigate();
-  const [userName, setUserName] = useState("");
-  const [pwd, setPwd] = useState("");
+  
+  useEffect(()=>{
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('====================================');
-    console.log(userName);
-    console.log(pwd);
-    console.log('====================================');
-    // Simulate authentication (replace with your actual logic)
-    if (userName === "user" && pwd === "pwd") {
-      login(); // Trigger login from context
-      navigate('/'); // Redirect to home after successful login
-    } else {
-      alert('Invalid credentials');
+    if (code) {
+      axios.post('http://localhost:5000/exchange_token', { code })
+        .then(response => {
+          console.log('Access Token:', response.data.access_token);
+          login(response.data.access_token);
+          navigate('/');
+        })
+        .catch(error => {
+          console.error('Error exchanging token:', error);
+        });
     }
+  },[])
+
+  const handleLogin42 = () => {
+    console.log('ENV', import.meta.env);
+    window.location.replace(auth42Url);
+    
   };
 
   return (
     <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="userName">User Name</label>
-        <input id="userName"type="text" onChange={() => setUserName(event.target.value)}/>
-        <br />
-        <label htmlFor="pwd">Password</label>
-        <input id="pwd"type="text" onChange={() => setPwd(event.target.value)}/>
-        <br />
-        <button type="submit" >Login</button>
-      </form>
+      <h1 className='text-3xl'>Login</h1>
+      <button onClick={handleLogin42}>Sign In With Intra</button>
+      {isLoggedIn && <p>{authToken}</p>}
     </div>
   );
 };

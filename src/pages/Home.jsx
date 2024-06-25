@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import { AuthContext } from '../components/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
-  const { logout } = useContext(AuthContext);
+  const { logout, authToken } = useContext(AuthContext);
+  const [auth, setAuth] = useState("No Auth");
   const navigate = useNavigate();
-  const intra_link = "https://profile.intra.42.fr/searches/search?query=hthant"
+
+  useEffect(() => {
+    setAuth(authToken);
+  },[authToken]);
+
   const handleLogout = () => {
     logout();
-    Cookies.remove('isLoggedIn'); // Clear the cookie
     navigate('/login'); // Redirect to login page
   };
 
@@ -17,9 +21,8 @@ const Home = () => {
     <div>
       <h1>Welcome to the Home Page!</h1>
       <p>This content is only accessible to logged-in users.</p>
-
       <button onClick={handleLogout}>Logout</button>
-      <button><a href={intra_link} target='blank'>See on Intra</a></button>
+      <p>Auth Token:{authToken}</p>
     </div>
   );
 };
