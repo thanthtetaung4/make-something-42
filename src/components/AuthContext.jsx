@@ -16,8 +16,8 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const storedUser = Cookies.get('isLoggedIn');
     const storedToken = Cookies.get('authToken');
-    setIsLoggedIn(!!storedUser);
-    setAuthToken(!!storedToken);
+    setIsLoggedIn(storedUser);
+    setAuthToken(storedToken);
   }, []);
 
   const login = (authToken) => {

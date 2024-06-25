@@ -22,7 +22,9 @@ const Home = () => {
       <h1>Welcome to the Home Page!</h1>
       <p>This content is only accessible to logged-in users.</p>
       <button onClick={handleLogout}>Logout</button>
-      <p>Auth Token:{authToken}</p>
+      <p>Auth Token:{auth}</p>
+
+      
     </div>
   );
 };
