@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 import axios from "axios";
 
 const Home = () => {
@@ -80,10 +81,10 @@ const Home = () => {
     fetchProjectData();
   }, [auth]);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login"); // Redirect to login page
-  };
+  // const handleLogout = () => {
+  //   logout();
+  //   navigate("/login"); // Redirect to login page
+  // };
 
   const handleCampusChange = (event) => {
     setSelectedCampus(event.target.value);
@@ -111,11 +112,15 @@ const Home = () => {
 
   const peersEl = peers.map((peer) => {
     return (
-      <div key={peer.id}>
-        <h1>{peer.user.login}</h1>
+      <div
+        key={peer.id}
+        className="flex justify-between border-2 border-PRIMARY mb-5 px-4 py-2 rounded-md items-center"
+      >
+        <h3 className="text-lg">{peer.user.login}</h3>
         <a
           href={`https://profile.intra.42.fr/users/${peer.user.login}`}
           target="blank"
+          className="px-4 py-2 border-2 rounded-md border-PRIMARY hover:bg-PRIMARY hover:text-SECONDARY ease-in-out"
         >
           Go to {peer.user.login}'s Intra
         </a>
@@ -128,43 +133,78 @@ const Home = () => {
   }
 
   return (
-    <div>
-      <h1>Welcome to the Home Page!</h1>
-      <p>This content is only accessible to logged-in users.</p>
-      <button onClick={handleLogout}>Logout</button>
-      <p>Auth Token:{auth}</p>
-      <label htmlFor="campus">Select Campus:</label>
-      {campusIsLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <select
-          name="campus"
-          id="campus"
-          value={selectedCampus}
-          onChange={handleCampusChange}
-        >
-          {campusOptions}
-        </select>
-      )}
-      <label htmlFor="porject">Select porject:</label>
-      {projectIsLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <select
-          name="porject"
-          id="porject"
-          value={selectedProject}
-          onChange={handleProjectChange}
-        >
-          {projectOptions}
-        </select>
-      )}
-      <p>Selected Campus: {selectedCampus}</p>
-      <p>Selected Project: {selectedProject}</p>
+    <div className="">
+      <Header />
+      <div className="p-5 bg-BACKGROUND text-TEXT_COLOR">
+        <h1 className="text-3xl mb-10 text-SECONDARY text-center">
+          Welcome to the 42 Peer Finder🤝🔎
+        </h1>
+        <div className="grid grid-cols-2 h-screen gap-5">
+          <div className="bg-SECONDARY py-5 px-5 rounded-md">
+            {/* <button onClick={handleLogout}>Logout</button> */}
+            {/* <p>Auth Token:{auth}</p> */}
+            <div>
+              <label htmlFor="campus">Select Campus</label>
 
-      <button onClick={handlePeerFinder}>Find Your Peer</button>
-
-      {isLoading ? <p>Loading...</p> : <div>{peersEl}</div>}
+              {campusIsLoading ? (
+                <p className="mt-3 w-full mb-5 rounded border-r-8 border-transparent px-4 py-2 text-sm outline outline-PRIMARY">
+                  Loading...
+                </p>
+              ) : (
+                <select
+                  name="campus"
+                  id="campus"
+                  value={selectedCampus}
+                  onChange={handleCampusChange}
+                  // className="w-full mb-5 border-2 border-PRIMARY flex justify-between px-4 py-2 rounded-md"
+                  className="mt-3 w-full mb-5 rounded border-r-8 border-transparent px-4 py-2 text-sm outline outline-PRIMARY"
+                >
+                  {campusOptions}
+                </select>
+              )}
+            </div>
+            <div className="">
+              <label htmlFor="porject">Select porject:</label>
+              {projectIsLoading ? (
+                <p className="mt-3 w-full mb-5 rounded border-r-8 border-transparent px-4 py-2 text-sm outline outline-PRIMARY">
+                  Loading...
+                </p>
+              ) : (
+                <select
+                  name="porject"
+                  id="porject"
+                  value={selectedProject}
+                  onChange={handleProjectChange}
+                  className="mt-3 w-full mb-5 rounded border-r-8 border-transparent px-4 py-2 text-sm outline outline-PRIMARY"
+                >
+                  {projectOptions}
+                </select>
+              )}
+            </div>
+            {/* <p>Selected Campus: {selectedCampus}</p>
+          <p>Selected Project: {selectedProject}</p> */}
+            <button
+              onClick={handlePeerFinder}
+              className="px-4 py-2 border-2 rounded-md border-PRIMARY hover:bg-PRIMARY hover:text-SECONDARY ease-in-out"
+            >
+              Find Your Peers 🔎
+            </button>
+          </div>
+          <div className="bg-SECONDARY py-5 px-5 rounded-md overflow-scroll">
+            <h2 className="text-2xl mb-3">Your Peers🤝</h2>
+            <p>
+              {peersEl.length === 0 && "Select option and find your peers!!"}
+            </p>
+            {isLoading ? (
+              <p className="mt-3 w-full mb-5 rounded border-r-8 border-transparent px-4 py-2 text-sm outline outline-PRIMARY">
+                Loading...
+              </p>
+            ) : (
+              <div>{peersEl ? peersEl : <p>Nothing to show</p>}</div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
