@@ -9,10 +9,12 @@ const Home = () => {
   const [auth, setAuth] = useState("No Auth");
   const [selectedCampus, setSelectedCampus] = useState("");
   const [selectedProject, setSelectedProject] = useState("");
+  const [peers, setPeers] = useState([]);
   const [campusData, setCampusData] = useState([]);
   const [projectData, setProjectData] = useState([]);
   const [campusIsLoading, setCampusIsLoading] = useState(false);
   const [projectIsLoading, setProjectIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const fetchCampusData = () => {
@@ -50,6 +52,28 @@ const Home = () => {
     } else console.log("not fetch");
   };
 
+  const fetchPeers = (projectId, campusId) => {
+    console.log(auth);
+    setIsLoading(true);
+    const accessToken = auth;
+    if (auth !== "No Auth") {
+      axios
+        .post("http://localhost:5000/api/get_peer_data", {
+          accessToken,
+          projectId,
+          campusId,
+        })
+        .then((response) => {
+          setPeers(response.data);
+          console.log(response.data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
+    } else console.log("not fetch");
+  };
+
   useEffect(() => {
     setAuth(authToken);
     fetchCampusData();
@@ -71,7 +95,7 @@ const Home = () => {
 
   const campusOptions = campusData.map((campus) => {
     return (
-      <option key={campus.id} value={campus.name}>
+      <option key={campus.id} value={campus.id}>
         {campus.name}
       </option>
     );
@@ -79,11 +103,29 @@ const Home = () => {
 
   const projectOptions = projectData.map((project) => {
     return (
-      <option key={project.id} value={project.name}>
+      <option key={project.id} value={project.id}>
         {project.name}
       </option>
     );
   });
+
+  const peersEl = peers.map((peer) => {
+    return (
+      <div key={peer.id}>
+        <h1>{peer.user.login}</h1>
+        <a
+          href={`https://profile.intra.42.fr/users/${peer.user.login}`}
+          target="blank"
+        >
+          Go to {peer.user.login}'s Intra
+        </a>
+      </div>
+    );
+  });
+
+  function handlePeerFinder() {
+    fetchPeers(selectedProject, selectedCampus);
+  }
 
   return (
     <div>
@@ -120,9 +162,9 @@ const Home = () => {
       <p>Selected Campus: {selectedCampus}</p>
       <p>Selected Project: {selectedProject}</p>
 
-      {/* {projectData.map((project) => (
-        <p key={project.id}>{project.name}</p>
-      ))} */}
+      <button onClick={handlePeerFinder}>Find Your Peer</button>
+
+      {isLoading ? <p>Loading...</p> : <div>{peersEl}</div>}
     </div>
   );
 };
