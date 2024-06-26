@@ -11,16 +11,20 @@ const Home = () => {
   const [selectedProject, setSelectedProject] = useState("");
   const [campusData, setCampusData] = useState([]);
   const [projectData, setProjectData] = useState([]);
+  const [campusIsLoading, setCampusIsLoading] = useState(false);
+  const [projectIsLoading, setProjectIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const fetchCampusData = () => {
     console.log(auth);
     const accessToken = auth;
+    setCampusIsLoading(true);
     if (auth !== "No Auth") {
       axios
         .post("http://localhost:5000/api/get_campus_data", { accessToken })
         .then((response) => {
           setCampusData(response.data);
+          setCampusIsLoading(false);
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
@@ -30,6 +34,7 @@ const Home = () => {
 
   const fetchProjectData = () => {
     console.log(auth);
+    setProjectIsLoading(true);
     const accessToken = auth;
     if (auth !== "No Auth") {
       axios
@@ -37,6 +42,7 @@ const Home = () => {
         .then((response) => {
           setProjectData(response.data);
           console.log(response.data);
+          setProjectIsLoading(false);
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
@@ -86,23 +92,31 @@ const Home = () => {
       <button onClick={handleLogout}>Logout</button>
       <p>Auth Token:{auth}</p>
       <label htmlFor="campus">Select Campus:</label>
-      <select
-        name="campus"
-        id="campus"
-        value={selectedCampus}
-        onChange={handleCampusChange}
-      >
-        {campusOptions}
-      </select>
+      {campusIsLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <select
+          name="campus"
+          id="campus"
+          value={selectedCampus}
+          onChange={handleCampusChange}
+        >
+          {campusOptions}
+        </select>
+      )}
       <label htmlFor="porject">Select porject:</label>
-      <select
-        name="porject"
-        id="porject"
-        value={selectedProject}
-        onChange={handleProjectChange}
-      >
-        {projectOptions}
-      </select>
+      {projectIsLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <select
+          name="porject"
+          id="porject"
+          value={selectedProject}
+          onChange={handleProjectChange}
+        >
+          {projectOptions}
+        </select>
+      )}
       <p>Selected Campus: {selectedCampus}</p>
       <p>Selected Project: {selectedProject}</p>
 
