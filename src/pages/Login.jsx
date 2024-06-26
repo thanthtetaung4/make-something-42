@@ -32,18 +32,18 @@ const Login = () => {
   };
 
   return (
-    <div className="w-screen h-screen">
-      <div className="flex justify-center items-ceter">
-        <div className="mt-3 mb-5 rounded border-r-8 border-transparent px-4 py-2 text-sm outline outline-PRIMARY">
-          <h1 className="text-3xl mb-3 text-center">Login</h1>
-          <button
-            onClick={handleLogin42}
-            className="px-4 py-2 border-2 rounded-md border-PRIMARY hover:bg-PRIMARY hover:text-SECONDARY ease-in-out"
-          >
-            Sign In With Intra
-          </button>
-          {isLoggedIn && <p>{authToken}</p>}
+    <div className="flex justify-center items-center w-screen h-screen">
+      <div className="flex-col justify-center items-center rounded border-r-8 border-transparent px-16 py-14 text-sm outline outline-PRIMARY">
+        <div className="flex justify-center">
+          <img src="./42.svg" alt="42_logo" className="w-24 mb-10" />
         </div>
+        <button
+          onClick={handleLogin42}
+          className="px-4 py-2 border-2 rounded-md border-PRIMARY hover:bg-PRIMARY hover:text-SECONDARY ease-in-out"
+        >
+          Sign In With Intra
+        </button>
+        {isLoggedIn && <p>{authToken}</p>}
       </div>
     </div>
   );
